@@ -3,13 +3,15 @@ import Card from "./card";
 
 export default function MorphingDialogBasicTwo() {
   return (
-    <div className="flex gap-5 flex-col m-5  w-[80%]">
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
+    <div className="flex justify-center  w-full">
+      <div className="w-[90%] flex flex-col gap-5 justify-center">
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+      </div>
     </div>
   );
 }

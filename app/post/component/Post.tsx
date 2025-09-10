@@ -26,8 +26,16 @@ export default function Post() {
         variant="outline"
         className="cursor-pointer rounded-[14px] border border-black/10 bg-white text-base md:left-6"
       >
-        <SparklesIcon className=" mr-2  fill-[#EEBDE0] stroke-1 text-neutral-800" />{" "}
-        Placement Annoucement
+        <SparklesIcon
+          style={{
+            height: "calc(var(--spacing) * 6)",
+            width: "calc(var(--spacing) * 6)",
+          }}
+          className=" mr-2 fill-[#EEBDE0] stroke-1 text-neutral-800"
+        />
+        <span className="whitespace-break-spaces break-words flex-wrap w-min md:w-auto">
+          Placement Annoucement
+        </span>
       </Badge>
     );
   };
@@ -38,7 +46,7 @@ export default function Post() {
         <div className="flex justify-between items-center w-full">
           <div className="flex gap-2 items-center">
             <BadgeButton />
-            <span className="flex text-sm">
+            <span className="text-sm hidden md:flex">
               <Calendar height={18} />
               December 15, 2024
             </span>
@@ -48,7 +56,7 @@ export default function Post() {
             <DropdownMenuTrigger asChild={true}>
               <Button
                 variant={"outline"}
-                className="w-fit h-fit py-1 px-3 rounded-xl"
+                className="w-fit h-fit py-1 px-3 rounded-xl focus-visible:ring-0"
               >
                 <Share2 />
                 Share
@@ -64,7 +72,10 @@ export default function Post() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-
+        <span className="text-sm flex md:hidden -mb-3 mt-2">
+          <Calendar height={18} />
+          December 15, 2024
+        </span>
         <div>
           <h2 className=" text-3xl font-semibold ">
             REGISTRATIONS FOR SCHNEIDER ELECTRIC INDIA PVT. LTD.

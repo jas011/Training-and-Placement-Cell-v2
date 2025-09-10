@@ -27,10 +27,18 @@ export default function Card() {
     return (
       <Badge
         variant="outline"
-        className="cursor-pointer rounded-[14px] border border-black/10 bg-white text-base md:left-6"
+        className="w-fit cursor-pointer rounded-[14px] border border-black/10 bg-white text-base md:left-6"
       >
-        <SparklesIcon className=" mr-2  fill-[#EEBDE0] stroke-1 text-neutral-800" />{" "}
-        Placement Annoucement
+        <SparklesIcon
+          style={{
+            height: "calc(var(--spacing) * 6)",
+            width: "calc(var(--spacing) * 6)",
+          }}
+          className=" mr-2 fill-[#EEBDE0] stroke-1 text-neutral-800"
+        />
+        <span className="whitespace-break-spaces break-words flex-wrap w-min md:w-auto">
+          Placement Annoucement
+        </span>
       </Badge>
     );
   };
@@ -39,12 +47,14 @@ export default function Card() {
     return (
       <div>
         {href && (
-          <div className="border cursor-pointer border-input bg-[#fe7500] p-1 rounded-full flex items-center justify-center text-white">
-            <Globe className="mx-1 animate-spin " height={18} />
-            <p className="font-medium tracking-tight mr-3 text-sm">
-              {children ? children : "Get Started"}
-            </p>
-          </div>
+          <Link href={href}>
+            <div className="border cursor-pointer border-input bg-[#fe7500] p-1 rounded-full flex items-center justify-center text-white">
+              <Globe className="mx-1 animate-spin " height={18} />
+              <p className="font-medium tracking-tight mr-3 text-sm">
+                {children ? children : "Get Started"}
+              </p>
+            </div>
+          </Link>
         )}
       </div>
     );
@@ -56,7 +66,7 @@ export default function Card() {
         <div className="flex justify-between items-center w-full">
           <div className="flex gap-2 items-center">
             <BadgeButton />
-            <span className="flex text-sm">
+            <span className="text-sm hidden md:flex">
               <Calendar height={18} />
               December 15, 2024
             </span>
@@ -66,13 +76,13 @@ export default function Card() {
             <DropdownMenuTrigger asChild={true}>
               <Button
                 variant={"outline"}
-                className="w-fit h-fit py-1 px-3 rounded-xl"
+                className="w-fit h-fit py-1 px-3 rounded-xl focus-visible:ring-0"
               >
                 <Share2 />
                 Share
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent className="bg-white">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Profile</DropdownMenuItem>
@@ -84,6 +94,9 @@ export default function Card() {
         </div>
 
         <div>
+          <span className="text-sm flex md:hidden mb-1 mt-2">
+            <Calendar height={18} /> December 15, 2024
+          </span>
           <h2 className=" text-2xl font-semibold ">
             REGISTRATIONS FOR SCHNEIDER ELECTRIC INDIA PVT. LTD.
           </h2>
@@ -108,7 +121,7 @@ export default function Card() {
         </div>
 
         <div className="flex justify-between w-full align-end flex-row-reverse mt-3">
-          <WrapButton href="ty" className="w-fit ">
+          <WrapButton href="./post" className="w-fit ">
             Read More
           </WrapButton>
         </div>
