@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function Page() {
   return (
-    <div className=" bg-white space-x-3 p-4 m-auto my-18 w-[90%] ">
+    <div className=" bg-white space-x-3 p-4 m-auto my-18 w-[90%] md:w-[50%] ">
       <div className=" w-fit ">
         <Link href={"/card"}>
           <div className=" mx-6 w-fit p-2 border border-primary rounded-[999px]">
