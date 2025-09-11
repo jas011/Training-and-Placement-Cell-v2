@@ -5,7 +5,7 @@ import type React from "react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import Papa from "papaparse";
-import MorphingDialogBasicTwo from "@/app/Table/page";
+import MorphingDialogBasicTwo from "@/app/Table";
 import { Label } from "@/components/ui/label";
 
 interface CSVRow {
@@ -30,7 +30,17 @@ export function CSVImportTable({
       header: true,
       skipEmptyLines: true,
       complete: (results: any) => {
-        setCsvData(results.data);
+        const data = results.data.map((item: any) => {
+          // delete all possible variants
+          delete item["S.No"];
+          delete item["sno"];
+          delete item["Sno"];
+
+          return item;
+        });
+
+        console.log(data);
+        setCsvData(data);
       },
     });
   };

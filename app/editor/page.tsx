@@ -3,6 +3,27 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { SerializedEditorState } from "lexical";
 import { Editor } from "@/components/blocks/editor-x/editor";
+import { PostInputForm } from "./components/post-input-form";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, Share2 } from "lucide-react";
+
+import { SparklesIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import MorphingDialogBasicTwo from "../Table";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { LexicalRenderer } from "@/app/utilities/render";
+
+interface CSVRow {
+  [key: string]: string;
+}
 
 /**
  * Initial document value
@@ -31,171 +52,17 @@ const initialValue: SerializedEditorState = {
   },
 } as unknown as SerializedEditorState;
 
-/**
- * Renderer: JSON → JSX
- */
-function LexicalRenderer({ state }: { state: SerializedEditorState }) {
-  if (!state?.root) return null;
-
-  return (
-    <div className="max-w-none">
-      {state.root.children.map((node: any, i: number) => {
-        switch (node.type) {
-          case "paragraph":
-            return (
-              <p key={i} className="text-md">
-                {node.children?.map((child: any, j: number) =>
-                  renderNode(child, j)
-                )}
-              </p>
-            );
-
-          case "list":
-            if (node.listType === "number") {
-              return (
-                <ol key={i} className="list-decimal ml-6 mb-3">
-                  {node.children?.map((li: any, j: number) => (
-                    <li key={j}>
-                      {li.children?.map((c: any, k: number) =>
-                        renderNode(c, k)
-                      )}
-                    </li>
-                  ))}
-                </ol>
-              );
-            } else {
-              return (
-                <ul key={i} className="list-disc ml-6 mb-3">
-                  {node.children?.map((li: any, j: number) => (
-                    <li key={j}>
-                      {li.children?.map((c: any, k: number) =>
-                        renderNode(c, k)
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              );
-            }
-
-          case "heading":
-            return (
-              <h2 key={i} className="mt-4 mb-2 font-bold text-xl">
-                {node.children?.map((child: any, j: number) =>
-                  renderNode(child, j)
-                )}
-              </h2>
-            );
-
-          case "quote":
-            return (
-              <blockquote
-                key={i}
-                className="border-l-4 border-muted pl-4 italic text-muted-foreground my-3"
-              >
-                {node.children?.map((child: any, j: number) =>
-                  renderNode(child, j)
-                )}
-              </blockquote>
-            );
-
-          case "table":
-            return <div key={i} />; // Placeholder for TableParser
-
-          default:
-            return null;
-        }
-      })}
-    </div>
-  );
-}
-
-/**
- * Render inline nodes (text, link, etc.)
- */
-function renderNode(node: any, key: number): React.ReactNode {
-  if (!node) return null;
-
-  switch (node.type) {
-    case "text": {
-      let el: React.ReactNode = (
-        <span
-          key={key}
-          style={{ ...parseStyle(node.style), whiteSpace: "pre-wrap" }}
-        >
-          {node.text}
-        </span>
-      );
-
-      // Apply formatting
-      if (node.format & 1) el = <strong key={key}>{el}</strong>; // Bold
-      if (node.format & 2) el = <em key={key}>{el}</em>; // Italic
-      if (node.format & 8) el = <u key={key}>{el}</u>; // Underline
-      if (node.format & 4) el = <code key={key}>{el}</code>; // Code
-
-      return el;
-    }
-
-    case "link":
-      return (
-        <a
-          key={key}
-          href={node.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 hover:underline"
-          style={{ whiteSpace: "pre-wrap" }}
-        >
-          {node.children?.map((c: any, i: number) => renderNode(c, i))}
-        </a>
-      );
-
-    default:
-      return null;
-  }
-}
-
-/**
- * Helper: Convert inline style string → React style object
- */
-function parseStyle(style: string): React.CSSProperties {
-  if (!style) return {};
-  return style.split(";").reduce((acc: any, rule) => {
-    const [prop, value] = rule.split(":").map((s) => s.trim());
-    if (prop && value) {
-      const camelProp = prop.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
-      acc[camelProp] = value;
-    }
-    return acc;
-  }, {});
-}
-
-import { PostInputForm } from "./components/post-input-form";
-
-interface CSVRow {
-  [key: string]: string;
-}
-
 export default function EditorPage() {
   const [editorState, setEditorState] =
     useState<SerializedEditorState>(initialValue);
-
   const [csvData, setCsvData] = useState<CSVRow[]>([]);
-
   const [title, setTitle] = useState("");
   const [announcementType, setAnnouncementType] = useState<string>("");
   const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
   const [showTable, setShowTable] = useState(false);
 
-  useEffect(() => {
-    console.log(csvData);
-  }, [csvData]);
-
-  useEffect(() => {
-    console.log(title);
-  }, [title]);
-
   return (
-    <div className="grid grid-cols-2 gap-6 h-fit p-5 border rounded-2xl m-5">
+    <div className="flex flex-col md:grid md:grid-cols-2 gap-6 h-fit m-2 p-1 md:p-5 border rounded-2xl md:m-5">
       {/* Editor */}
 
       <div className="p-4 border rounded-xl ">
@@ -238,28 +105,6 @@ export default function EditorPage() {
   );
 }
 
-import { Badge } from "@/components/ui/badge";
-import { Calendar, Share2 } from "lucide-react";
-
-import { SparklesIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import MorphingDialogBasicTwo from "../Table/page";
-import { ScrollArea } from "@/components/ui/scroll-area";
-
-interface WrapButtonProps {
-  className?: string;
-  children: React.ReactNode;
-  href?: string;
-}
-
 function Post({
   Elem,
   title,
@@ -282,11 +127,11 @@ function Post({
         className="cursor-pointer rounded-[14px] border border-black/10 bg-white text-base md:left-6"
       >
         <SparklesIcon
-          className=" mr-2  fill-[#EEBDE0] stroke-1 text-neutral-800"
           style={{
             height: "calc(var(--spacing) * 6)",
             width: "calc(var(--spacing) * 6)",
           }}
+          className=" mr-2 fill-[#EEBDE0] stroke-1 text-neutral-800"
         />
         {announcementType}
       </Badge>
@@ -294,7 +139,7 @@ function Post({
   };
 
   return (
-    <ScrollArea className=" h-[80vh] w-full ">
+    <ScrollArea className=" h-[87vh] w-full ">
       <div className=" bg-white space-x-3 p-4 ">
         <div className="flex flex-col items-left gap-4">
           <div className="flex justify-between items-center w-full">
@@ -342,7 +187,7 @@ function Post({
                 ))}
               </div>
 
-              {showTable && (
+              {showTable && csvData.length > 0 && (
                 <MorphingDialogBasicTwo data={csvData} fileName="Students" />
               )}
             </div>

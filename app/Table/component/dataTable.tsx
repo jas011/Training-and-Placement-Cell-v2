@@ -97,8 +97,8 @@ export function DataTableDemo({ data }: any) {
       {
         id: "actions",
         accessorKey: "SNo.",
-        header: () => <div className="ml-2">Index</div>,
-        cell: ({ row }: any) => {
+        header: () => <div className="ml-2">SNo.</div>,
+        cell: ({ row }) => {
           const item = row.index + 1;
           return <div className="ml-2">{String(item)}</div>;
         },
