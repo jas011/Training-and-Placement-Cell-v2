@@ -1,6 +1,7 @@
 "use client";
+import { nanoid } from "nanoid";
 
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { SerializedEditorState } from "lexical";
 import { Editor } from "@/components/blocks/editor-x/editor";
 import { PostInputForm } from "./components/post-input-form";
@@ -17,9 +18,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import MorphingDialogBasicTwo from "../Table";
+import MorphingDialogBasicTwo from "../components/Table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { LexicalRenderer } from "@/app/utilities/render";
+import { docToHash } from "@/components/editor/utils/doc-serialization";
+import { SerializedDocument } from "@lexical/file";
+import Post from "@/app/components/Post";
+import { parseDate } from "../utilities/dataParse";
 
 interface CSVRow {
   [key: string]: string;
@@ -60,142 +65,144 @@ export default function EditorPage() {
   const [announcementType, setAnnouncementType] = useState<string>("");
   const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
   const [showTable, setShowTable] = useState(false);
+  const [fileName, setFileName] = useState<string>("");
 
-  return (
-    <div className="flex flex-col md:grid md:grid-cols-2 gap-6 h-fit m-2 p-1 md:p-5 border rounded-2xl md:m-5">
-      {/* Editor */}
+  const Excerpt = (data: any, range: number) => {
+    let count = 0,
+      i = 0;
+    const truncatedData = [];
 
-      <div className="p-4 border rounded-xl ">
-        <main className=" bg-background p-6">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-3xl font-bold text-foreground mb-8">
-              Create New Post
-            </h1>
-            <PostInputForm
-              {...{
-                title,
-                setTitle,
-                announcementType,
-                setAnnouncementType,
-                selectedBranches,
-                setSelectedBranches,
-                showTable,
-                setShowTable,
-                setCsvData,
-                csvData,
-              }}
-            />
-          </div>
-        </main>
+    for (const text of data.root.children) {
+      if (count > range) {
+        break;
+      }
+      i++;
+      const children = [];
 
-        <Editor
-          editorSerializedState={editorState}
-          onSerializedChange={(value) => setEditorState(value)}
-        />
-      </div>
+      for (const data of text.children) {
+        if (count + data.text.length < range) {
+          count += data.text.length;
+          children.push(data);
+        } else {
+          const res = { ...data, text: data.text.slice(0, range - count) };
+          count = range + 1;
+          children.push(res);
+          break;
+        }
+      }
 
-      {/* Preview */}
-      <div className="p-4 border rounded-xl ">
-        <Post
-          {...{ title, announcementType, selectedBranches, showTable, csvData }}
-          Elem={<LexicalRenderer state={editorState} />}
-        />
-      </div>
-    </div>
-  );
-}
+      truncatedData.push({ ...text, children });
+    }
 
-function Post({
-  Elem,
-  title,
-  announcementType,
-  selectedBranches,
-  csvData,
-  showTable,
-}: {
-  Elem: ReactNode;
-  title: string;
-  announcementType: string;
-  selectedBranches: string[];
-  showTable: boolean;
-  csvData: CSVRow[];
-}) {
-  const BadgeButton = () => {
-    return (
-      <Badge
-        variant="outline"
-        className="cursor-pointer rounded-[14px] border border-black/10 bg-white text-base md:left-6"
-      >
-        <SparklesIcon
-          style={{
-            height: "calc(var(--spacing) * 6)",
-            width: "calc(var(--spacing) * 6)",
-          }}
-          className=" mr-2 fill-[#EEBDE0] stroke-1 text-neutral-800"
-        />
-        {announcementType}
-      </Badge>
-    );
+    return {
+      root: {
+        ...data.root,
+        children: truncatedData,
+      },
+    };
+  };
+
+  const handlePost = async () => {
+    // const data = {
+    //   title,
+    //   announcementType,
+    //   selectedBranches,
+    //   csvData,
+    //   excerpt: await docToHash(Excerpt(editorState, 600) as any),
+    //   doc: await docToHash(editorState as any),
+    // };
+
+    const data = {
+      id: nanoid(7),
+      title,
+      status: "Active",
+      announcementType,
+      selectedBranches,
+      csvData,
+      doc: await docToHash(editorState as any),
+      preview: await docToHash(Excerpt(editorState, 600) as any),
+      authorId: "68c42ad12ac817192a9dff51",
+      fileName,
+    };
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify(data);
+    fetch("https://jaskirat.shop/api/posts", {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    })
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.error(error));
+
+    console.log(data);
   };
 
   return (
-    <ScrollArea className=" h-[87vh] w-full ">
-      <div className=" bg-white space-x-3 p-4 ">
-        <div className="flex flex-col items-left gap-4">
-          <div className="flex justify-between items-center w-full">
-            <div className="flex gap-2 items-center">
-              <BadgeButton />
-              <span className="flex text-sm">
-                <Calendar height={18} />
-                December 15, 2024
-              </span>
+    <div className="w-full flex items-center flex-col ">
+      <div className="w-[95%] flex  flex-col md:grid md:grid-cols-2 gap-6 h-fit border rounded-2xl  mx-2 p-1 ">
+        {/* Editor */}
+
+        <div className="p-4 border rounded-xl h-fit">
+          <main className=" bg-background p-6">
+            <div className="max-w-4xl mx-auto">
+              <h1 className="text-3xl font-bold text-foreground mb-8">
+                Create New Post
+              </h1>
+              <PostInputForm
+                {...{
+                  title,
+                  setTitle,
+                  announcementType,
+                  setAnnouncementType,
+                  selectedBranches,
+                  setSelectedBranches,
+                  showTable,
+                  setShowTable,
+                  setCsvData,
+                  csvData,
+                  fileName,
+                  setFileName,
+                }}
+              />
             </div>
+          </main>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild={true}>
-                <Button
-                  variant={"outline"}
-                  className="w-fit h-fit py-1 px-3 rounded-xl"
-                >
-                  <Share2 />
-                  Share
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Billing</DropdownMenuItem>
-                <DropdownMenuItem>Team</DropdownMenuItem>
-                <DropdownMenuItem>Subscription</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <Editor
+            editorSerializedState={editorState}
+            onSerializedChange={(value) => setEditorState(value)}
+          />
+        </div>
 
-          <div>
-            <h2 className=" text-3xl font-semibold ">{title.toUpperCase()}</h2>
-            <div className="flex justify-between h-fit items-center mt-4 mb-5">
-              <div className="flex gap-2 ">
-                {selectedBranches.map((branch, i) => (
-                  <Badge
-                    variant={"secondary"}
-                    key={i}
-                    className="border border-primary"
-                  >
-                    {branch.toUpperCase()}
-                  </Badge>
-                ))}
-              </div>
-
-              {showTable && csvData.length > 0 && (
-                <MorphingDialogBasicTwo data={csvData} fileName="Students" />
-              )}
-            </div>
-
-            {Elem}
-          </div>
+        {/* Preview */}
+        <div className="p-4 border rounded-xl flex flex-col h-[74.7vh] ">
+          <ScrollArea className=" w-full h-[70vh]">
+            <Post
+              {...{
+                title,
+                announcementType,
+                selectedBranches,
+                showTable,
+                csvData,
+                Data: <LexicalRenderer state={editorState} />,
+                fileName,
+                date: parseDate(new Date().toLocaleString()),
+              }}
+            />
+          </ScrollArea>
         </div>
       </div>
-    </ScrollArea>
+      <Button
+        className="mx-12 my-5 self-end"
+        disabled={announcementType.length == 0 && title.length == 0}
+        onClick={handlePost}
+      >
+        Publish Post
+      </Button>
+    </div>
   );
 }

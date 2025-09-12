@@ -135,7 +135,7 @@ export function DataTableDemo({ data }: any) {
           placeholder="Search all columns..."
           value={globalFilter ?? ""}
           onChange={(e) => setGlobalFilter(e.target.value)}
-          className="max-w-sm"
+          className="max-w-sm w-[50%]"
         />
 
         <DownloadCSV />

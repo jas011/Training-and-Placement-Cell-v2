@@ -46,10 +46,10 @@ export default function MorphingDialogBasicTwo({
           style={{
             borderRadius: "12px",
           }}
-          className="relative h-auto w-[80%] lg:w-[60%]   border border-gray-100 bg-white "
+          className="relative h-[90vh] w-[80%] lg:w-[60%]   border border-gray-100 bg-white "
         >
           <div className="flex flex-col items-start justify-center mx-5 mt-5">
-            <MorphingDialogTitle className="text-black">
+            <MorphingDialogTitle className="text-black mt-1 w-[50vw]">
               {fileName.toUpperCase()}
             </MorphingDialogTitle>
           </div>

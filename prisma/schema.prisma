@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String
+  password  String
+  posts     Post[]   @relation("UserPosts")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id               String   @id @map("_id")
+  title            String
+  status           String // Draft or Active  
+  announcementType String //  "announcement" 
+  selectedBranches String[] //e.g. MBA or BBA 
+  doc              String // compressed Lexical string
+  preview          String // trimmed preview text
+  csvData          Json[]
+  fileName         String
+  author           User     @relation("UserPosts", fields: [authorId], references: [id])
+  authorId         String   @db.ObjectId
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([title]) // index on title
+  @@index([createdAt]) // index on createdAt
+  @@index([status]) // index on status
+}

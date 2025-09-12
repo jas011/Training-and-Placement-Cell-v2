@@ -50,6 +50,8 @@ export function PostInputForm(props: {
   selectedBranches: string[];
   showTable: boolean;
   csvData: CSVRow[];
+  fileName: string;
+  setFileName: Dispatch<SetStateAction<string>>;
 }) {
   const {
     title,
@@ -62,6 +64,8 @@ export function PostInputForm(props: {
     setShowTable,
     setCsvData,
     csvData,
+    fileName,
+    setFileName,
   } = props;
 
   return (
@@ -130,7 +134,12 @@ export function PostInputForm(props: {
       {showTable && (
         <div className="space-y-2">
           <Label className="text-sm font-medium">CSV Import</Label>
-          <CSVImportTable setCsvData={setCsvData} csvData={csvData} />
+          <CSVImportTable
+            setCsvData={setCsvData}
+            csvData={csvData}
+            fileName={fileName}
+            setFileName={setFileName}
+          />
         </div>
       )}
     </div>

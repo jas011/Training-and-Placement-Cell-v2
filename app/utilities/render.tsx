@@ -6,24 +6,33 @@ import { SerializedEditorState } from "lexical";
 
 export function LexicalRenderer({ state }: { state: SerializedEditorState }) {
   if (!state?.root) return null;
-
+  console.log(state);
   return (
     <div className="max-w-none">
       {state.root.children.map((node: any, i: number) => {
         switch (node.type) {
           case "paragraph":
             return (
-              <p key={i} className="text-md">
-                {node.children?.map((child: any, j: number) =>
-                  renderNode(child, j)
-                )}
-              </p>
+              <div key={i} className="my-3">
+                <p
+                  className={`text-md text-${node.format} `}
+                  style={{ marginLeft: node.indent * 40 + "px" }}
+                >
+                  {node.children?.map((child: any, j: number) =>
+                    renderNode(child, j)
+                  )}
+                </p>
+              </div>
             );
 
           case "list":
             if (node.listType === "number") {
               return (
-                <ol key={i} className="list-decimal ml-6 mb-3">
+                <ol
+                  key={i}
+                  className="list-decimal ml-6 mb-3"
+                  style={{ marginLeft: node.indent * 40 + "px" }}
+                >
                   {node.children?.map((li: any, j: number) => (
                     <li key={j}>
                       {li.children?.map((c: any, k: number) =>
@@ -35,7 +44,11 @@ export function LexicalRenderer({ state }: { state: SerializedEditorState }) {
               );
             } else {
               return (
-                <ul key={i} className="list-disc ml-6 mb-3">
+                <ul
+                  key={i}
+                  className="list-disc ml-6 mb-3"
+                  style={{ marginLeft: node.indent * 40 + "px" }}
+                >
                   {node.children?.map((li: any, j: number) => (
                     <li key={j}>
                       {li.children?.map((c: any, k: number) =>
@@ -49,7 +62,11 @@ export function LexicalRenderer({ state }: { state: SerializedEditorState }) {
 
           case "heading":
             return (
-              <h2 key={i} className="mt-4 mb-2 font-bold text-xl">
+              <h2
+                key={i}
+                className={`mt-4 mb-2 font-bold text-xl text-${node.format}`}
+                style={{ marginLeft: node.indent * 40 + "px" }}
+              >
                 {node.children?.map((child: any, j: number) =>
                   renderNode(child, j)
                 )}
@@ -59,6 +76,7 @@ export function LexicalRenderer({ state }: { state: SerializedEditorState }) {
           case "quote":
             return (
               <blockquote
+                style={{ marginLeft: node.indent * 40 + "px" }}
                 key={i}
                 className="border-l-4 border-muted pl-4 italic text-muted-foreground my-3"
               >
@@ -68,14 +86,107 @@ export function LexicalRenderer({ state }: { state: SerializedEditorState }) {
               </blockquote>
             );
 
-          case "table":
-            return <div key={i} />; // Placeholder for TableParser
+          // Placeholder for TableParser
 
           default:
             return null;
         }
       })}
     </div>
+  );
+}
+export function LexicalRendererPreview({
+  state,
+}: {
+  state: SerializedEditorState;
+}) {
+  if (!state?.root) return null;
+  console.log(state);
+  return (
+    <>
+      {state.root.children.map((node: any, i: number) => {
+        switch (node.type) {
+          case "paragraph":
+            return (
+              <p
+                key={i}
+                className={`text-muted-foreground text-sm text-${node.format} `}
+                style={{ marginLeft: node.indent * 40 + "px" }}
+              >
+                {node.children?.map((child: any, j: number) =>
+                  renderNode(child, j)
+                )}
+              </p>
+            );
+
+          case "list":
+            if (node.listType === "number") {
+              return (
+                <ol
+                  key={i}
+                  className="list-decimal ml-6 mb-3"
+                  style={{ marginLeft: node.indent * 40 + "px" }}
+                >
+                  {node.children?.map((li: any, j: number) => (
+                    <li key={j}>
+                      {li.children?.map((c: any, k: number) =>
+                        renderNode(c, k)
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              );
+            } else {
+              return (
+                <ul
+                  key={i}
+                  className="list-disc ml-6 mb-3"
+                  style={{ marginLeft: node.indent * 40 + "px" }}
+                >
+                  {node.children?.map((li: any, j: number) => (
+                    <li key={j}>
+                      {li.children?.map((c: any, k: number) =>
+                        renderNode(c, k)
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              );
+            }
+
+          case "heading":
+            return (
+              <h2
+                key={i}
+                className={`mt-4 mb-2 font-bold text-xl text-${node.format}`}
+                style={{ marginLeft: node.indent * 40 + "px" }}
+              >
+                {node.children?.map((child: any, j: number) =>
+                  renderNode(child, j)
+                )}
+              </h2>
+            );
+
+          case "quote":
+            return (
+              <blockquote
+                style={{ marginLeft: node.indent * 40 + "px" }}
+                key={i}
+                className="border-l-4 border-muted pl-4 italic text-muted-foreground my-3"
+              >
+                {node.children?.map((child: any, j: number) =>
+                  renderNode(child, j)
+                )}
+              </blockquote>
+            );
+
+          // Placeholder for TableParser
+
+          default:
+            return null;
+        }
+      })}
+    </>
   );
 }
 

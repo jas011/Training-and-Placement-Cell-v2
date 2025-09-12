@@ -126,21 +126,19 @@ export function Plugins({}) {
             <HistoryToolbarPlugin />
             <Separator orientation="vertical" className="!h-7" />
             <BlockFormatDropDown>
+              <FormatHeading levels={["h3"]} />
               <FormatParagraph />
-              <FormatHeading levels={["h1", "h2", "h3"]} />
               <FormatNumberedList />
               <FormatBulletedList />
-              <FormatCheckList />
-              <FormatCodeBlock />
+              {/* <FormatCheckList />
+              <FormatCodeBlock /> */}
               <FormatQuote />
             </BlockFormatDropDown>
-            {blockType === "code" ? (
-              <CodeLanguageToolbarPlugin />
-            ) : (
+            {
               <>
-                <FontFamilyToolbarPlugin />
-                <FontSizeToolbarPlugin />
-                <Separator orientation="vertical" className="!h-7" />
+                {/* <FontFamilyToolbarPlugin />
+                <FontSizeToolbarPlugin /> */}
+                {/* <Separator orientation="vertical" className="!h-7" /> */}
                 <FontFormatToolbarPlugin format="bold" />
                 <FontFormatToolbarPlugin format="italic" />
                 <FontFormatToolbarPlugin format="underline" />
@@ -154,16 +152,16 @@ export function Plugins({}) {
                 <FontBackgroundToolbarPlugin />
                 <Separator orientation="vertical" className="!h-7" />
                 <ElementFormatToolbarPlugin />
-                <Separator orientation="vertical" className="!h-7" />
-                <BlockInsertPlugin>
+                {/* <Separator orientation="vertical" className="!h-7" /> */}
+                {/* <BlockInsertPlugin>
                   <InsertHorizontalRule />
                   <InsertImage />
                   <InsertTable />
                   <InsertColumnsLayout />
                   <InsertEmbeds />
-                </BlockInsertPlugin>
+                </BlockInsertPlugin> */}
               </>
-            )}
+            }
           </div>
         )}
       </ToolbarPlugin>
@@ -175,7 +173,7 @@ export function Plugins({}) {
               <div className="" ref={onRef}>
                 <ContentEditable
                   placeholder={placeholder}
-                  className="ContentEditable__root relative block h-[calc(100vh-570px)] min-h-72 min-h-full overflow-auto px-8 py-4 focus:outline-none"
+                  className="ContentEditable__root relative block h-[calc(100vh-624px)] min-h-72 min-h-full overflow-auto px-8 py-4 focus:outline-none"
                 />
               </div>
             </div>

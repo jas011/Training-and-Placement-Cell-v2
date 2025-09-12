@@ -5,7 +5,7 @@ import type React from "react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import Papa from "papaparse";
-import MorphingDialogBasicTwo from "@/app/Table";
+import MorphingDialogBasicTwo from "@/app/components/Table";
 import { Label } from "@/components/ui/label";
 
 interface CSVRow {
@@ -15,12 +15,14 @@ interface CSVRow {
 export function CSVImportTable({
   setCsvData,
   csvData,
+  fileName,
+  setFileName,
 }: {
   setCsvData: Dispatch<SetStateAction<CSVRow[]>>;
   csvData: CSVRow[];
+  fileName: string;
+  setFileName: Dispatch<SetStateAction<string>>;
 }) {
-  const [fileName, setFileName] = useState<string>("");
-
   const handleCSVUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
