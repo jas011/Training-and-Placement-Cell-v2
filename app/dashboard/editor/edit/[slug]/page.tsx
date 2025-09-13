@@ -152,10 +152,16 @@ export default function EditorPage() {
       .then((result) => {
         console.log(result);
 
-        toast({
+        if(status=="publish")toast({
           variant: "success",
-          title: "Post updated ✏️",
-          description: "Your announcement has been updated successfully.",
+          title: "Post published 🎉",
+          description: "Your announcement has been published successfully.",
+        });
+
+         else toast({
+          variant: "success",
+          title: "Post Drafted 🎉",
+          description: "Your announcement has been Drafted successfully.",
         });
 
         setLoading(false);
