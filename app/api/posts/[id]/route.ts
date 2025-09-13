@@ -68,3 +68,31 @@ export async function PATCH(
 
   return NextResponse.json(post);
 }
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+   const { id } = await params;
+
+    // Delete post by ID
+    const deleted = await prisma.post.delete({
+      where: { id },
+    });
+
+    return NextResponse.json(
+      { message: "Post deleted successfully", post: deleted },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    console.error("❌ Delete error:", error);
+
+    if (error.code === "P2025") {
+      // Record not found
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ error: "Failed to delete post" }, { status: 500 });
+  }
+}
