@@ -59,8 +59,8 @@ export default function Page() {
   return (
     <>
       {post && (
-        <div className=" bg-white space-x-3 m-auto my-18 w-full max-w-2xl border rounded-2xl relative bg-white">
-          <div className=" w-fit px-4 py-6">
+        <div className=" bg-white space-x-3 m-auto -my-8 w-full max-w-2xl   rounded-2xl relative bg-white">
+          <div className=" w-fit px-4 py-0">
             <Link href={"/"}>
               <div className=" mx-6 w-fit p-2 border border-primary rounded-[999px]">
                 <MoveLeft />
@@ -68,7 +68,7 @@ export default function Page() {
             </Link>
           </div>
 
-          <Separator />
+          {/* <Separator /> */}
 
           <div className="p-4 ">
             <Post

@@ -48,7 +48,7 @@ export default function Card({
             height: "calc(var(--spacing) * 6)",
             width: "calc(var(--spacing) * 6)",
           }}
-          className=" mr-2 fill-[#EEBDE0] stroke-1 text-neutral-800"
+          className=" mr-2 fill-[#0088ffad] stroke-1 text-neutral-800"
         />
         <span className="whitespace-break-spaces break-words flex-wrap w-min md:w-auto">
           {announcementType}
@@ -62,7 +62,7 @@ export default function Card({
       <div className="md:w-fit w-full">
         {href && (
           <Link href={href} rel={rel}>
-            <div className="border cursor-pointer border-input bg-[#fe7500] p-1 rounded-full flex items-center justify-center text-white md:w-fit w-full">
+            <div className="border cursor-pointer border-input bg-[#0088ff] p-1 rounded-full flex items-center justify-center text-white md:w-fit w-full">
               <Globe className="mx-1 animate-spin " height={18} />
               <p className="font-medium tracking-tight mr-3 text-sm">
                 {children ? children : "Get Started"}

@@ -20,6 +20,7 @@ export async function GET(
       fileName: true,
       createdAt: true,
       csvData: true,
+      status: true,
     },
   });
 
@@ -45,6 +46,23 @@ export async function PUT(
       authorId: body.authorId,
       csvData: body.showTable ? body.csvData : [],
       fileName: body.fileName,
+    },
+  });
+
+  return NextResponse.json(post);
+}
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const body = await req.json();
+
+  const post = await prisma.post.update({
+    where: { id },
+    data: {
+      status: body.status,
     },
   });
 

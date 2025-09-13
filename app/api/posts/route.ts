@@ -10,6 +10,10 @@ export async function GET(req: Request) {
   const query = searchParams.get("q")?.toLowerCase() || "";
   const branchFilters = searchParams.get("branch")?.split(",").filter(Boolean);
   const typeFilters = searchParams.get("type")?.split(",").filter(Boolean);
+  let dashboardData: any = searchParams.get("isDash");
+  console.log(Boolean(dashboardData));
+  if (dashboardData === null) dashboardData = true;
+  else dashboardData = false;
 
   const where: any = {};
 
@@ -43,6 +47,7 @@ export async function GET(req: Request) {
   if (typeFilters?.length) {
     where.announcementType = { in: typeFilters };
   }
+  if (dashboardData) where.status = "published";
 
   let posts;
   if (cursor) {
@@ -57,10 +62,11 @@ export async function GET(req: Request) {
         title: true,
         announcementType: true,
         selectedBranches: true,
-        preview: true,
+        preview: dashboardData,
         createdAt: true,
-        csvData: true,
-        fileName: true,
+        csvData: dashboardData,
+        fileName: dashboardData,
+        status: true,
       },
     });
   } else {
@@ -73,13 +79,34 @@ export async function GET(req: Request) {
         title: true,
         announcementType: true,
         selectedBranches: true,
-        preview: true,
+        preview: dashboardData,
         createdAt: true,
-        csvData: true,
-        fileName: true,
+        csvData: dashboardData,
+        fileName: dashboardData,
+        status: true,
       },
     });
   }
 
   return NextResponse.json(posts);
+}
+// POST /api/posts Creation Of Data
+export async function POST(req: Request) {
+  const body = await req.json();
+  console.log(body);
+  const post = await prisma.post.create({
+    data: {
+      id: body.id,
+      title: body.title,
+      status: body.status,
+      announcementType: body.announcementType,
+      selectedBranches: body.selectedBranches,
+      doc: body.doc,
+      preview: body.preview,
+      authorId: body.authorId,
+      csvData: body.showTable ? body.csvData : [],
+      fileName: body.fileName,
+    },
+  });
+  return NextResponse.json(post);
 }

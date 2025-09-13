@@ -43,7 +43,7 @@ export default function Post({
             height: "calc(var(--spacing) * 6)",
             width: "calc(var(--spacing) * 6)",
           }}
-          className=" mr-2 fill-[#EEBDE0] stroke-1 text-neutral-800"
+          className=" mr-2 fill-[#0088ff] stroke-1 text-neutral-800"
         />
         <span className="whitespace-break-spaces break-words flex-wrap w-min md:w-auto">
           {announcementType}

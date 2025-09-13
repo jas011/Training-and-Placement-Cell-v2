@@ -1,79 +1,88 @@
 "use client";
-import { nanoid } from "nanoid";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SerializedEditorState } from "lexical";
 import { Editor } from "@/components/blocks/editor-x/editor";
-import { PostInputForm } from "../components/post-input-form";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, Loader2Icon, Share2 } from "lucide-react";
-
-import { SparklesIcon } from "lucide-react";
+import { PostInputForm } from "../../components/post-input-form";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import MorphingDialogBasicTwo from "../../../components/Table";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { LexicalRenderer } from "@/app/utilities/render";
-import { docToHash } from "@/components/editor/utils/doc-serialization";
-import { SerializedDocument } from "@lexical/file";
+import {
+  docFromHash,
+  docToHash,
+} from "@/components/editor/utils/doc-serialization";
 import Post from "@/app/components/Post";
 import { parseDate } from "@/app/utilities/dataParse";
+import { useParams, useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { Loader2Icon } from "lucide-react";
 import { ToastAction } from "@/components/ui/toast";
-import { useRouter } from "next/navigation";
 
 interface CSVRow {
   [key: string]: string;
 }
 
-/**
- * Initial document value
- */
-const initialValue: SerializedEditorState = {
-  root: {
-    children: [
-      {
-        type: "paragraph",
-        version: 1,
-        children: [
-          {
-            type: "text",
-            version: 1,
-            detail: 0,
-            format: 1, // bold
-            mode: "normal",
-            style: "",
-            text: "",
-          },
-        ],
-      },
-    ],
-    type: "root",
-    version: 1,
-  },
-} as unknown as SerializedEditorState;
+type Post = {
+  id: string;
+  title: string;
+  createdAt: string;
+  announcementType: string;
+  doc: string;
+  parsedDoc: any;
+  selectedBranches: string[];
+  csvData: CSVRow[];
+  fileName: string;
+};
 
 export default function EditorPage() {
-  const [editorState, setEditorState] =
-    useState<SerializedEditorState>(initialValue);
+  const params = useParams<{ slug: string[] }>();
+  const slug = params?.slug;
+
+  const [editorState, setEditorState] = useState<SerializedEditorState>();
   const [csvData, setCsvData] = useState<CSVRow[]>([]);
   const [title, setTitle] = useState("");
   const [announcementType, setAnnouncementType] = useState<string>("");
   const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
   const [showTable, setShowTable] = useState(false);
   const [fileName, setFileName] = useState<string>("");
-  const [id] = useState<string>(nanoid(7));
+  const [id, setId] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (!slug) return;
+    getPost(slug);
+  }, []);
+
+  const getPost = async (slug: string[]) => {
+    setId(slug);
+    const res = await fetch(`/api/posts/${slug}`, {
+      method: "GET",
+      redirect: "follow",
+    });
+    const data: Post = await res.json();
+
+    console.log(data);
+
+    // parse previews here
+    const parsed = {
+      ...data,
+      parsedDoc: await docFromHash(data.doc),
+    };
+
+    setTitle(parsed.title);
+    setAnnouncementType(parsed.announcementType);
+    setSelectedBranches(parsed.selectedBranches);
+    if (parsed.csvData) {
+      setCsvData(parsed.csvData);
+      setShowTable(true);
+      setFileName(parsed.fileName);
+    }
+    setEditorState(parsed.parsedDoc as any);
+  };
 
   const Excerpt = (data: any, range: number) => {
     let count = 0,
@@ -110,12 +119,12 @@ export default function EditorPage() {
     };
   };
 
-  const handlePost = async () => {
+  const handlePost = async (status: string) => {
     setLoading(true);
     const data = {
       id,
       title,
-      status: "Active",
+      status,
       announcementType,
       selectedBranches,
       csvData,
@@ -133,8 +142,8 @@ export default function EditorPage() {
     myHeaders.append("Content-Type", "application/json");
 
     const raw = JSON.stringify(data);
-    fetch("https://jaskirat.shop/api/posts", {
-      method: "POST",
+    fetch(`https://jaskirat.shop/api/posts/${id}`, {
+      method: "PUT",
       headers: myHeaders,
       body: raw,
       redirect: "follow",
@@ -142,20 +151,21 @@ export default function EditorPage() {
       .then((response) => response.text())
       .then((result) => {
         console.log(result);
+
         toast({
           variant: "success",
-          title: "Post published 🎉",
-          description: "Your announcement has been published successfully.",
+          title: "Post updated ✏️",
+          description: "Your announcement has been updated successfully.",
         });
+
         setLoading(false);
-        router.push(`/editor/edit/${data.id}`);
       })
       .catch((error) => {
         console.error(error);
         toast({
           variant: "destructive",
-          title: "Failed to publish post ❌",
-          description: "Something went wrong. Please try again.",
+          title: "Something went wrong ❌",
+          description: "We couldn’t complete your request. Please try again.",
         });
       });
 
@@ -171,7 +181,7 @@ export default function EditorPage() {
           <main className=" bg-background p-6">
             <div className="max-w-4xl mx-auto">
               <h1 className="text-3xl font-bold text-foreground mb-8">
-                Create New Post
+                Edit Post
               </h1>
               <PostInputForm
                 {...{
@@ -192,42 +202,57 @@ export default function EditorPage() {
             </div>
           </main>
 
-          <Editor
-            editorSerializedState={editorState}
-            onSerializedChange={(value) => setEditorState(value)}
-          />
+          {editorState && (
+            <Editor
+              editorSerializedState={editorState}
+              onSerializedChange={(value) => setEditorState(value)}
+            />
+          )}
         </div>
 
         {/* Preview */}
         <div className="p-4 border rounded-xl flex flex-col h-[74.7vh] ">
           <ScrollArea className=" w-full h-[70vh]">
-            <Post
-              {...{
-                title,
-                announcementType,
-                selectedBranches,
-                showTable,
-                csvData,
-                Data: <LexicalRenderer state={editorState} />,
-                fileName,
-                date: parseDate(new Date().toLocaleString()),
-                activeShare: false,
-                id: id as any,
-              }}
-            />
+            {editorState && (
+              <Post
+                {...{
+                  title,
+                  announcementType,
+                  selectedBranches,
+                  showTable,
+                  csvData: showTable ? csvData : [],
+                  Data: <LexicalRenderer state={editorState} />,
+                  fileName,
+                  date: parseDate(new Date().toLocaleString()),
+                  activeShare: false,
+                  id: id as any,
+                }}
+              />
+            )}
           </ScrollArea>
         </div>
       </div>
-      <Button
-        className="mx-12 my-5 self-end"
-        disabled={
-          (announcementType.length == 0 && title.length == 0) || loading
-        }
-        onClick={handlePost}
-      >
-        {loading && <Loader2Icon className="animate-spin" />}
-        Publish Post
-      </Button>
+      <div className="flex gap-2 w-full justify-end mx-12 my-5">
+        <Button
+          disabled={
+            (announcementType.length == 0 && title.length == 0) || loading
+          }
+          variant={"secondary"}
+          onClick={() => handlePost("draft")}
+        >
+          {loading && <Loader2Icon className="animate-spin" />}
+          Save Draft
+        </Button>
+        <Button
+          disabled={
+            (announcementType.length == 0 && title.length == 0) || loading
+          }
+          onClick={() => handlePost("publish")}
+        >
+          {loading && <Loader2Icon className="animate-spin" />}
+          Publish Post
+        </Button>
+      </div>
     </div>
   );
 }

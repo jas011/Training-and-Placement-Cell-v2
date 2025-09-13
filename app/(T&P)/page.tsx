@@ -156,12 +156,6 @@ export default function PostsPage() {
   // ---------------- UI ----------------
   return (
     <>
-      <ProgressiveBlur
-        position="top"
-        backgroundColor="#f5f4f3"
-        className="fixed"
-      />
-
       <div className="flex justify-center flex-col w-full items-center mb-12">
         <div className="w-full max-w-2xl mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2">
