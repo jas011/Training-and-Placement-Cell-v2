@@ -76,7 +76,6 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const body = await req.json();
 
   const post = await prisma.post.delete({
     where: { id }
