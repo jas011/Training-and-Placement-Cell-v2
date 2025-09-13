@@ -152,7 +152,7 @@ export default function EditorPage() {
       .then((result) => {
         console.log(result);
 
-        if(status=="publish")toast({
+        if(status=="published")toast({
           variant: "success",
           title: "Post published 🎉",
           description: "Your announcement has been published successfully.",
@@ -253,7 +253,7 @@ export default function EditorPage() {
           disabled={
             (announcementType.length == 0 && title.length == 0) || loading
           }
-          onClick={() => handlePost("publish")}
+          onClick={() => handlePost("published")}
         >
           {loading && <Loader2Icon className="animate-spin" />}
           Publish Post
