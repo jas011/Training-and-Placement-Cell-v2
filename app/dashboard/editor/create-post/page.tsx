@@ -121,7 +121,7 @@ export default function EditorPage() {
     myHeaders.append("Content-Type", "application/json");
 
     const raw = JSON.stringify(data);
-    fetch("https://jaskirat.shop/api/posts", {
+    fetch("/api/posts", {
       method: "POST",
       headers: myHeaders,
       body: raw,
