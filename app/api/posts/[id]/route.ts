@@ -86,7 +86,7 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error: any) {
-    console.error("❌ Delete error:", error);
+    console.error("❌ Delete error:", error); 
 
     if (error.code === "P2025") {
       // Record not found
