@@ -29,7 +29,7 @@ export default function Page() {
   const params = useParams<{ slug: string[] }>();
   const slug = params?.slug;
   const [post, setPost] = useState<Post>();
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -59,7 +59,7 @@ export default function Page() {
   return (
     <>
       {post && (
-        <div className=" bg-white space-x-3 m-auto my-18 w-[95%] md:w-[50%] border rounded-2xl relative bg-white">
+        <div className=" bg-white space-x-3 m-auto my-18 w-full max-w-2xl border rounded-2xl relative bg-white">
           <div className=" w-fit px-4 py-6">
             <Link href={"/"}>
               <div className=" mx-6 w-fit p-2 border border-primary rounded-[999px]">
@@ -80,6 +80,7 @@ export default function Page() {
                 selectedBranches: post.selectedBranches,
                 csvData: post.csvData ? post.csvData : [],
                 fileName: post.fileName,
+                id: post.id,
               }}
             />
           </div>

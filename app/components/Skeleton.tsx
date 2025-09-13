@@ -1,48 +1,35 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function EventAnnouncementSkeleton() {
+export function SkeletonCard() {
   return (
-    <div className="bg-card border border-border rounded-lg p-6 space-y-4 max-w-2xl m-5 h-[570px] md:w-full md:h-auto ">
-      {/* Header with icon and date */}
-      <div className="flex items-center gap-2">
-        <Skeleton className="h-6 w-32 rounded-xl" />
-      </div>
-
-      {/* Main title */}
-      <Skeleton className="h-8 w-full" />
-
-      {/* Badges row */}
+    <div className="rounded-xl border shadow-sm p-5 space-y-4 animate-pulse">
+      {/* Title + Date */}
       <div className="flex items-center justify-between">
-        <div className="flex gap-2">
-          <Skeleton className="h-6 w-12 rounded-full" />
-          <Skeleton className="h-6 w-12 rounded-full" />
-          <Skeleton className="h-6 w-16 rounded-full" />
-          <Skeleton className="h-6 w-16 rounded-full" />
-        </div>
+        <Skeleton className="h-6 w-2/3 rounded-md" />
+        <Skeleton className="h-4 w-20 rounded-md" />
       </div>
 
-      {/* Body text paragraphs */}
-      <div className="space-y-3">
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4" />
-        </div>
+      {/* Announcement type */}
+      <Skeleton className="h-5 w-32 rounded-full" />
 
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-full" />
-        </div>
+      {/* Branch badges */}
+      <div className="flex gap-2">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-6 w-12 rounded-full" />
+        ))}
       </div>
 
-      {/* Bottom action buttons */}
-      <div className="flex items-center justify-between pt-2">
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-4 w-4 rounded" />
-          <Skeleton className="h-4 w-12" />
-        </div>
-        <Skeleton className="h-8 w-24 rounded" />
+      {/* Preview text */}
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-full rounded-md" />
+        <Skeleton className="h-4 w-5/6 rounded-md" />
+        <Skeleton className="h-4 w-4/6 rounded-md" />
+      </div>
+
+      {/* Buttons */}
+      <div className="flex justify-between mt-4">
+        <Skeleton className="h-8 w-20 rounded-md" />
+        <Skeleton className="h-8 w-24 rounded-md" />
       </div>
     </div>
   );

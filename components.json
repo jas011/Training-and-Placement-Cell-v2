@@ -20,6 +20,7 @@
   },
   "registries": {
     "@shadcn-editor": "https://shadcn-editor.vercel.app/r/{name}.json",
-    "@skiper-ui": "https://skiper-ui.com/registry/{name}.json"
+    "@skiper-ui": "https://skiper-ui.com/registry/{name}.json",
+    "@animate-ui": "https://animate-ui.com/r/{name}.json"
   }
 }

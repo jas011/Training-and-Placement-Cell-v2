@@ -35,7 +35,17 @@ export async function PUT(
 
   const post = await prisma.post.update({
     where: { id },
-    data: body,
+    data: {
+      title: body.title,
+      status: body.status,
+      announcementType: body.announcementType,
+      selectedBranches: body.selectedBranches,
+      doc: body.doc,
+      preview: body.preview,
+      authorId: body.authorId,
+      csvData: body.showTable ? body.csvData : [],
+      fileName: body.fileName,
+    },
   });
 
   return NextResponse.json(post);

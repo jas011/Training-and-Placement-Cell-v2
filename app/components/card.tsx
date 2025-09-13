@@ -1,26 +1,18 @@
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Share2 } from "lucide-react";
-import { ProgressiveBlur } from "@/components/ui/skiper-ui/skiper41";
+import { Calendar } from "lucide-react";
 import React, { ReactNode } from "react";
 import { SparklesIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import Link from "next/link";
 import { Globe } from "lucide-react";
 import MorphingDialogBasicTwo from "./Table";
+import { ShareButton } from "./shareBtn";
 
 interface WrapButtonProps {
   className?: string;
   children: React.ReactNode;
   href?: string;
+  rel?: string;
 }
 interface CSVRow {
   [key: string]: string;
@@ -65,11 +57,11 @@ export default function Card({
     );
   };
 
-  const WrapButton: React.FC<WrapButtonProps> = ({ children, href }) => {
+  const WrapButton: React.FC<WrapButtonProps> = ({ children, href, rel }) => {
     return (
       <div className="md:w-fit w-full">
         {href && (
-          <Link href={href}>
+          <Link href={href} rel={rel}>
             <div className="border cursor-pointer border-input bg-[#fe7500] p-1 rounded-full flex items-center justify-center text-white md:w-fit w-full">
               <Globe className="mx-1 animate-spin " height={18} />
               <p className="font-medium tracking-tight mr-3 text-sm">
@@ -83,10 +75,10 @@ export default function Card({
   };
 
   return (
-    <div className="border border-gray-200/60 bg-white space-x-3 p-4 rounded-xl">
+    <div className="border border-gray-200/60 bg-white space-x-3 p-4 rounded-xl hover:scale-105 hover:shadow-sm transition delay-50 duration-300 ease-in-out">
       <div className="flex flex-col items-left gap-4">
         <div className="flex justify-between items-center w-full">
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center justify-between w-full">
             <BadgeButton />
             <span className="text-sm hidden md:flex  text-muted-foreground items-center">
               <Calendar height={18} />
@@ -122,38 +114,23 @@ export default function Card({
           )}
 
           <div
-            className="max-w-none text-sm text-muted-foreground 
-            line-clamp-8 md:line-clamp-none"
+            className="max-w-none text-sm text-muted-foreground relative 
+            line-clamp-7"
             style={{
               overflow: "hidden",
             }}
           >
             {Data}
+            <div className="absolute bottom-0 left-0 h-12 w-full bg-gradient-to-t from-white to-transparent pointer-events-none" />
           </div>
         </div>
 
         <div className="flex justify-between w-full align-end flex-col-reverse md:flex-row mt-3 gap-2 items-end">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild={true}>
-              <Button
-                variant={"outline"}
-                className="w-full md:w-fit h-fit py-1 px-3 rounded-xl focus-visible:ring-0"
-              >
-                <Share2 />
-                Share
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Billing</DropdownMenuItem>
-              <DropdownMenuItem>Team</DropdownMenuItem>
-              <DropdownMenuItem>Subscription</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <ShareButton id={id} title={title} isFullPost={true} />
 
-          <WrapButton href={`./post/${id}`}>Read More</WrapButton>
+          <WrapButton href={`./post/${id}`} rel={title}>
+            Read More
+          </WrapButton>
         </div>
       </div>
     </div>

@@ -18,23 +18,21 @@ import { MultiSelect } from "./multi-select";
 import { CSVImportTable } from "./csv-import-table";
 
 const announcementTypes = [
-  { value: "General Announcement", label: "General Announcement" },
+  { value: "Hackathon Announcement", label: "Hackathon Announcement" },
+  { value: "Placement Announcement", label: "Placement Announcement" },
+  { value: "Internship Announcement", label: "Internship Announcement" },
   { value: "Event Announcement", label: "Event Announcement" },
-  { value: "Selection Annoucement", label: "Selection Annoucement" },
-  { value: "Placement Annoucement", label: "Placement Annoucement" },
+  { value: "Others Announcement", label: "Others Announcement" },
 ];
 
 const branchOptions = [
+  { value: "cse", label: "CSE" },
+  { value: "it", label: "IT" },
+  { value: "ce", label: "CE" },
+  { value: "ee", label: "EE" },
+  { value: "ece", label: "ECE" },
   { value: "mba", label: "MBA" },
-  { value: "bba", label: "BBA" },
-  { value: "btech", label: "B.Tech" },
-  { value: "mtech", label: "M.Tech" },
-  { value: "bca", label: "BCA" },
-  { value: "mca", label: "MCA" },
-  { value: "bcom", label: "B.Com" },
-  { value: "mcom", label: "M.Com" },
-  { value: "ba", label: "BA" },
-  { value: "ma", label: "MA" },
+  { value: "me", label: "ME" },
 ];
 interface CSVRow {
   [key: string]: string;

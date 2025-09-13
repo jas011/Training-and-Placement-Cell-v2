@@ -3,22 +3,16 @@ import { Calendar, Share2 } from "lucide-react";
 
 import React, { ReactNode } from "react";
 import { SparklesIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import MorphingDialogBasicTwo from "@/app/components/Table";
+import { ShareButton } from "./shareBtn";
 
 interface CSVRow {
   [key: string]: string;
 }
 
 export default function Post({
+  id,
   title,
   date,
   announcementType,
@@ -26,7 +20,9 @@ export default function Post({
   selectedBranches,
   csvData,
   fileName,
+  activeShare = true,
 }: {
+  id: string;
   title: string;
   date: string;
   announcementType: string;
@@ -34,6 +30,7 @@ export default function Post({
   selectedBranches: string[];
   csvData: CSVRow[];
   fileName: string;
+  activeShare?: boolean;
 }) {
   const BadgeButton = () => {
     return (
@@ -67,25 +64,7 @@ export default function Post({
             </span>
           </div>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild={true}>
-              <Button
-                variant={"outline"}
-                className="w-fit h-fit py-1 px-3 rounded-xl focus-visible:ring-0"
-              >
-                <Share2 />
-                Share
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Billing</DropdownMenuItem>
-              <DropdownMenuItem>Team</DropdownMenuItem>
-              <DropdownMenuItem>Subscription</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <ShareButton id={id} title={title} ActiveShare={activeShare} />
         </div>
         <span className="text-sm flex items-center md:hidden mb-3 -mt-1 text-muted-foreground">
           <Calendar height={18} />
