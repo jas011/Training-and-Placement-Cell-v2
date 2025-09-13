@@ -11,7 +11,7 @@ import Link from "next/link";
 
 const LINKS = [
   { label: "Home", href: "/" },
-  { label: "Editor", href: "/dashboard/editor/create-post" },
+  { label: "Dashboard", href: "/dashboard" },
   { label: "Contact", href: "/contact" },
 ];
 
