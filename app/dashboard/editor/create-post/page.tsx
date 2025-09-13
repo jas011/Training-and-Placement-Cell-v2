@@ -130,10 +130,16 @@ export default function EditorPage() {
       .then((response) => response.text())
       .then((result) => {
         console.log(result);
-        toast({
+        if(status=="publish")toast({
           variant: "success",
           title: "Post published 🎉",
           description: "Your announcement has been published successfully.",
+        });
+
+         else toast({
+          variant: "success",
+          title: "Post Drafted 🎉",
+          description: "Your announcement has been Drafted successfully.",
         });
         setLoading(false);
         router.push(`/dashboard`);
