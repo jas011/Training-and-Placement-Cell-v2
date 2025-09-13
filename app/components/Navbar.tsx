@@ -11,7 +11,8 @@ import Link from "next/link";
 
 const LINKS = [
   { label: "Home", href: "/" },
-  { label: "Editor", href: "/editor/create-post" },
+  { label: "Editor", href: "/dashboard/editor/create-post" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export default function NavBar() {
