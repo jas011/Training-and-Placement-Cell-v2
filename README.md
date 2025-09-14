@@ -1,38 +1,183 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# Training & Placement Cell V2
 
-First, run the development server:
+A full-stack web application built with **Next.js (App Router)**, **Prisma**, and **MongoDB (Atlas)**.  
+This project is part of the **TNP Technical Recruitment Task**.  
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🚀 Features
+
+- **Home Page (`/home`)**
+  - Infinite scroll for browsing posts
+  - Filters by category/branch (CSE, IT, CE, EE, ECE, MBA, etc.)
+  - Filters by type (Hackathon, Placement, Internship, Event, Other)
+  - Search bar (searches title, date, announcement type)
+  - Sorted by updated time (ascending)
+
+- **Post Page (`/post/[slug]`)**
+  - Full post view
+  - CSV upload support → view + download
+  - Edit & Delete buttons
+
+- **Create Post (`/dashboard/editor/create-post`)**
+  - Rich text editor (Lexical-based)
+  - File upload support
+  - Post preview before publishing
+
+- **Edit Post (`/dashboard/editor/edit/[slug]`)**
+  - Modify existing posts
+  - Save changes in database
+
+- **Dashboard (`/dashboard`)**
+  - Lists posts created by the logged-in user
+  - Edit & Delete options
+
+- **Contact Page (`/contact`)**
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: [Next.js 15 (App Router)](https://nextjs.org/) with TypeScript  
+- **Styling**: Tailwind CSS + Shadcn/UI Components  
+- **Backend**: Next.js API Routes  
+- **Database**: MongoDB Atlas (free M0 cluster)  
+- **ORM**: Prisma  
+- **Deployment**: Vercel  
+
+---
+
+## 📂 Project Structure
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+app/
+├─ (T\&P)/
+│   ├─ contact/         # Contact page
+│   ├─ home/            # Home page
+├   └─ post/\[slug]/    # Dynamic post detail page
+├─ api/
+│   ├─ page/            # Page count API
+│   ├─ postCount/       # Post counter API
+│   └─ posts/
+│       ├─ \[id]/route.ts  # GET, PUT, PATCH, DELETE post by ID
+│       └─ route.ts       # CRUD endpoints for posts
+├─ users/               # User API
+├─ dashboard/           # Dashboard for managing posts
+    └─ editor/          # Post editor (create/edit)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+````
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## ⚙️ Environment Variables
 
-To learn more about Next.js, take a look at the following resources:
+Create a `.env.local` file in your project root:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```env
+MONGODB_URI="mongodb://127.0.0.1:27017/TNP"
+````
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> ⚠️ Replace `<username>` and `<password>` with your MongoDB Atlas credentials.
+> Ensure the DB name is `TNP` (or update schema accordingly).
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔧 Prisma Setup
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Generate Prisma client:
 
-"C:\Program Files\MongoDB\Server\8.0\bin\mongod.exe" --dbpath "C:\data\db" --replSet rs0
+   ```bash
+   npx prisma generate
+   ```
+
+2. Push schema to database:
+
+   ```bash
+   npx prisma db push
+   ```
+
+3. Example `Post` model (from `schema.prisma`):
+
+   ```prisma
+   model Post {
+    id               String   @id @map("_id")
+    title            String
+    status           String // Draft or Active  
+    announcementType String //  "announcement" 
+    selectedBranches String[] //e.g. MBA or BBA 
+    doc              String // compressed Lexical string
+    preview          String // trimmed preview text
+    csvData          Json[]
+    fileName         String
+    author           User     @relation("UserPosts", fields: [authorId], references: [id])
+    authorId         String   @db.ObjectId
+    createdAt        DateTime @default(now())
+    updatedAt        DateTime @updatedAt
+
+    @@index([title]) // index on title
+    @@index([createdAt]) // index on createdAt
+    @@index([status]) // index on status
+   }
+   ```
+
+---
+
+## 🖥️ Running Locally
+
+1. Clone repo:
+
+   ```bash
+   git clone https://github.com/yourusername/Training-and-Placement-Cell-v2.git
+   cd Training-and-Placement-Cell-v2
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Start dev server:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Visit:
+
+   ```
+   http://localhost:3000
+   ```
+
+---
+
+## 🚀 Deployment
+
+Deployed on **Vercel**.
+
+* Build command:
+
+  ```bash
+  prisma generate && next build
+  ```
+* Env vars configured via Vercel dashboard.
+
+---
+
+## 🔮 Future Improvements
+
+* User authentication & role-based access (e.g., admin, student)
+* Notifications for new posts
+* File uploads (images, PDFs) with cloud storage (e.g., S3, Cloudinary)
+* Analytics dashboard for TNP team
+
+---
+
+## 📞 Contact
+
+* Built by: Jaskirat Singh
+* For TNP Technical Recruitment 2025
+
+
