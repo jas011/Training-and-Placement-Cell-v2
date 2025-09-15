@@ -157,8 +157,8 @@ export default function PostsPage() {
   // ---------------- UI ----------------
   return (
     <>
-      <div className="md:grid md:grid-cols-3 justify-items-center w-full relative gap-6">
-        <div></div>
+      <div className="md:flex md:justify-center justify-items-center w-full relative gap-6">
+ 
         <div>
           <div className="flex justify-center flex-col w-full items-center mb-12">
             <div className="w-full max-w-2xl mx-auto px-4">
