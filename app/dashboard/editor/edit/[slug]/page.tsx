@@ -181,7 +181,7 @@ export default function EditorPage() {
     myHeaders.append("Content-Type", "application/json");
 
     const raw = JSON.stringify(data);
-    fetch(`/api/posts/${id}`, {
+    await fetch(`/api/posts/${id}`, {
       method: "PUT",
       headers: myHeaders,
       body: raw,
