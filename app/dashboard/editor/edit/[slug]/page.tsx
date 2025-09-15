@@ -84,27 +84,26 @@ export default function EditorPage() {
     setEditorState(parsed.parsedDoc as any);
   };
 
-  const Excerpt = (data: any, range: number) => {
+const Excerpt = (data: any, range: number) => {
   let count = 0;
   const truncatedData: any[] = [];
 
-  for (const text of data.root.children) {
+  for (const text of data.root.children ?? []) {
     if (count >= range) break;
 
     const children: any[] = [];
 
-    for (const child of text.children) {
-      const textLen = child.text.length;
+    for (const child of text.children ?? []) {
+      const textContent = child?.text ?? ""; // safe fallback
+      const textLen = textContent.length;
 
-      // If adding this whole chunk stays within range
       if (count + textLen <= range) {
         children.push(child);
         count += textLen;
       } else {
-        // Slice only what fits
         const remaining = range - count;
         if (remaining > 0) {
-          children.push({ ...child, text: child.text.slice(0, remaining) });
+          children.push({ ...child, text: textContent.slice(0, remaining) });
           count = range;
         }
         break;
@@ -121,6 +120,7 @@ export default function EditorPage() {
     },
   };
 };
+
 
 
   // const Excerpt = (data: any, range: number) => {
