@@ -63,40 +63,80 @@ export default function EditorPage() {
 
   const { toast } = useToast();
 
-  const Excerpt = (data: any, range: number) => {
-    let count = 0,
-      i = 0;
-    const truncatedData = [];
 
-    for (const text of data.root.children) {
-      if (count > range) {
+  const Excerpt = (data: any, range: number) => {
+  let count = 0;
+  const truncatedData: any[] = [];
+
+  for (const text of data.root.children) {
+    if (count >= range) break;
+
+    const children: any[] = [];
+
+    for (const child of text.children) {
+      const textLen = child.text.length;
+
+      // If adding this whole chunk stays within range
+      if (count + textLen <= range) {
+        children.push(child);
+        count += textLen;
+      } else {
+        // Slice only what fits
+        const remaining = range - count;
+        if (remaining > 0) {
+          children.push({ ...child, text: child.text.slice(0, remaining) });
+          count = range;
+        }
         break;
       }
-      i++;
-      const children = [];
-
-      for (const data of text.children) {
-        if (count + data.text.length < range) {
-          count += data.text.length;
-          children.push(data);
-        } else {
-          const res = { ...data, text: data.text.slice(0, range - count) };
-          count = range + 1;
-          children.push(res);
-          break;
-        }
-      }
-
-      truncatedData.push({ ...text, children });
     }
 
-    return {
-      root: {
-        ...data.root,
-        children: truncatedData,
-      },
-    };
+    truncatedData.push({ ...text, children });
+  }
+
+  return {
+    root: {
+      ...data.root,
+      children: truncatedData,
+    },
   };
+};
+
+  
+  // const Excerpt = (data: any, range: number) => {
+  //   let count = 0,
+  //     i = 0;
+  //   const truncatedData = [];
+
+  //   for (const text of data.root.children) {
+  //     if (count > range) {
+  //       break;
+  //     }
+  //     i++;
+  //     const children = [];
+
+  //     for (const data of text.children) {
+  //       if (count + data.text.length < range) {
+  //         count += data.text.length;
+  //         children.push(data);
+  //       } else {
+  //         const res = { ...data, text: data.text.slice(0, range - count) };
+  //         count = range + 1;
+  //         children.push(res);
+  //         break;
+  //       }
+  //     }
+
+  //     truncatedData.push({ ...text, children });
+  //   }
+
+  //   return {
+  //     root: {
+  //       ...data.root,
+  //       children: truncatedData,
+  //     },
+  //   };
+  // };
 
   const handlePost = async (status: string) => {
     setLoading(true);
