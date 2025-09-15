@@ -85,41 +85,47 @@ export default function EditorPage() {
   };
 
 const Excerpt = (data: any, range: number) => {
-  let count = 0;
-  const truncatedData: any[] = [];
+  try {
+    let count = 0;
+    const truncatedData: any[] = [];
 
-  for (const text of data.root.children ?? []) {
-    if (count >= range) break;
+    for (const text of data.root.children ?? []) {
+      if (count >= range) break;
 
-    const children: any[] = [];
+      const children: any[] = [];
 
-    for (const child of text.children ?? []) {
-      const textContent = child?.text ?? ""; // safe fallback
-      const textLen = textContent.length;
+      for (const child of text.children ?? []) {
+        const textContent = child?.text ?? "";
+        const textLen = textContent.length;
 
-      if (count + textLen <= range) {
-        children.push(child);
-        count += textLen;
-      } else {
-        const remaining = range - count;
-        if (remaining > 0) {
-          children.push({ ...child, text: textContent.slice(0, remaining) });
-          count = range;
+        if (count + textLen <= range) {
+          children.push(child);
+          count += textLen;
+        } else {
+          const remaining = range - count;
+          if (remaining > 0) {
+            children.push({ ...child, text: textContent.slice(0, remaining) });
+            count = range;
+          }
+          break;
         }
-        break;
       }
+
+      truncatedData.push({ ...text, children });
     }
 
-    truncatedData.push({ ...text, children });
+    return {
+      root: {
+        ...data.root,
+        children: truncatedData,
+      },
+    };
+  } catch (err) {
+    console.error("Excerpt error:", err);
+    return data; // fallback to original object
   }
-
-  return {
-    root: {
-      ...data.root,
-      children: truncatedData,
-    },
-  };
 };
+
 
 
 
