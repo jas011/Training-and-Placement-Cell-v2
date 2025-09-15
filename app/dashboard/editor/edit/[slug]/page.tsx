@@ -176,6 +176,7 @@ export default function EditorPage() {
       });
 
     console.log(data);
+    setLoading(false);
   };
 
   return (
